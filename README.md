@@ -10,3 +10,5 @@
 
     Prior to executing "run_script.py" please ensure the "src" folder contains the following:
         - website.py
+
+    The script outputs a json file named after the domain of the website that was scraped

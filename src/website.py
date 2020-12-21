@@ -45,17 +45,35 @@ class Website:
 
         return resources
 
+    def get_word_count(self, url: str) -> int:
+        # Download html document and save it in html_doc variable
+        html_doc = req.get(url).content
+        # Instance of an lxml object obtained from a string
+        doc = lxml.html.fromstring(html_doc)
+
+        # Strip the <script> and <head> elements from the doc
+        lxml.etree.strip_elements(doc, lxml.etree.Comment, "script", "head")
+
+        visible_text = lxml.html.tostring(doc, method='text', encoding='unicode')
+
+        return len(visible_text.split())
+
     def to_json(self) -> dict:
+        # Dictionary containing all hyperlinks and external resources
         json_object = {
             'Hyperlinks': {},
             'External Resources': self.get_external_resources(),
             'Privacy Policy': {}
         }
+        # Index used to enumerate hyperlinks
         i = 1
 
+        # Call get_hyperlinks method and iterate through the returned set
         for link in self.get_hyperlinks():
             json_object['Hyperlinks'][i] = link
+            # Check if link contains the word 'Privacy'
             if "privacy" in link:
+                # Append the link to the Privacy Policy object
                 json_object['Privacy Policy']['url'] = link
             i += 1
 
